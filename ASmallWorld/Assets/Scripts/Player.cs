@@ -10,10 +10,12 @@ namespace ASmallWorld {
         private CharacterController controller;
 
         private Vector3 moveDirection = Vector3.zero;
+        public Faction faction { get; set; }
 
         // Use this for initialization
         void Awake() {
             controller = GetComponent<CharacterController>();
+            faction = Faction.YELLOW;
         }
 
         // Update is called once per frame
