@@ -7,6 +7,7 @@ TagManager:
   - Voter
   - Timer
   - OpinionPoller
+  - MenuUI
   layers:
   - Default
   - TransparentFX
