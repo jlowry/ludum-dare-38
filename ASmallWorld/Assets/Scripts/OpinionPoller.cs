@@ -1,15 +1,34 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace ASmallWorld {
     public class OpinionPoller : MonoBehaviour {
         struct PollResult
         {
+//            private struct FactionVotes: IComparable<FactionVotes> {
+//                public Faction faction;
+//                public float votes;
+//
+//
+//                public FactionVotes(Faction faction, float votes) {
+//                    this.faction = faction;
+//                    this.votes = votes;
+//                }
+//
+//                public int CompareTo(FactionVotes other) {
+//                    return this.votes.CompareTo(other.votes);
+//                }
+//            }
+
             public float red;
             public float green;
             public float blue;
             public float yellow;
+
+            //private FactionVotes[] results;
 
             public PollResult(float red, float green, float blue, float yellow) {
                 this.red = red;
@@ -17,7 +36,9 @@ namespace ASmallWorld {
                 this.blue = blue;
                 this.yellow = yellow;
             }
+
         }
+
 
         private Voter[] voters;
         private InfluenceMeter influenceMeter;
@@ -57,6 +78,14 @@ namespace ASmallWorld {
         void Update() {
             var result = PollVoters();
             influenceMeter.SetPercentages(result.red, result.green, result.blue, result.yellow);
+        }
+
+        public Faction GetWinningFaction() {
+            var result = PollVoters();
+            var myList = votes.ToList();
+
+            myList.Sort((pair1, pair2) => pair1.Value.CompareTo(pair2.Value));
+            return myList[3].Key;
         }
     }
 }

@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - Voter
+  - Timer
+  - OpinionPoller
   layers:
   - Default
   - TransparentFX
