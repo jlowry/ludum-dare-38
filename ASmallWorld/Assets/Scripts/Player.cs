@@ -8,32 +8,42 @@ namespace ASmallWorld {
         public float speed = 4.0F;
         public float gravity = 20.0F;
         private CharacterController controller;
+		private Animator anim;
+		private Transform camera;
 
         private Vector3 moveDirection = Vector3.zero;
         public Faction faction { get; set; }
+	private static readonly int SPEED = Animator.StringToHash ("Speed");
 
         // Use this for initialization
         void Awake() {
+			camera = GameObject.FindWithTag ("MainCamera").transform;	
             controller = GetComponent<CharacterController>();
+			anim = GetComponentInChildren<Animator> ();
             faction = Faction.YELLOW;
         }
 
         // Update is called once per frame
         void Update() {
-            if (controller.isGrounded)
-            {
+            if (controller.isGrounded) {
+				var cameraForward = Vector3.Scale(camera.forward, new Vector3(1, 0, 1)).normalized;
+				var v = Input.GetAxis("Vertical");
+				var h = Input.GetAxis("Horizontal");
 
-                moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-                var m_TurnAmount = Mathf.Atan2(moveDirection.x, moveDirection.z);
-                // help the character turn faster (this is in addition to root rotation in the animation)
-                //float turnSpeed = Mathf.Lerp(m_StationaryTurnSpeed, m_MovingTurnSpeed, m_ForwardAmount);
-                transform.Rotate(0, m_TurnAmount * 100.0F * Time.deltaTime, 0);
-                moveDirection = transform.TransformDirection(moveDirection);
+				moveDirection = v*cameraForward + h*camera.right;
+                
+				var turnAmount = Mathf.Atan2(moveDirection.x, moveDirection.z);
+                transform.Rotate(0, turnAmount * 100.0F * Time.deltaTime, 0);
+                
+				moveDirection = transform.TransformDirection(moveDirection);
                 moveDirection *= speed;
+				
+				if (moveDirection.sqrMagnitude > 0.1F) {
+					anim.SetFloat (SPEED, 1.0F);
+				} else {
+					anim.SetFloat (SPEED, 0.0F);
+				}
             }
-
-
-
             moveDirection.y -= gravity * Time.deltaTime;
             controller.Move(moveDirection * Time.deltaTime);           
         }
